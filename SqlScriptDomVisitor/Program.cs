@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿//------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="SQLProj.com">
+//         Copyright © 2013 SQLProj.com - All rights reserved.
+// </copyright>
+//------------------------------------------------------------------------------
 
 namespace SqlScriptDomVisitor
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Microsoft.SqlServer.TransactSql.ScriptDom;
+
     class Program
     {
         static void Main(string[] args)

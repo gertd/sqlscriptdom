@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="DacPackage.cs" company="SQLProj.com">
+// <copyright file="RaiserrorVistor.cs" company="SQLProj.com">
 //         Copyright © 2013 SQLProj.com - All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
