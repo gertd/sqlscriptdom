@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.IO;
-using System.Globalization;
+﻿//------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="SQLProj.com">
+//         Copyright © 2013 SQLProj.com - All rights reserved.
+// </copyright>
+//------------------------------------------------------------------------------
 
-namespace UpdateRaiserror
+namespace SqlProj.SqlScriptDom.Example.UpdateRaiserror
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using Microsoft.SqlServer.TransactSql.ScriptDom;
+
     class Program
     {
         static void Main(string[] args)
@@ -30,7 +35,7 @@ namespace UpdateRaiserror
                 IndentationSize = 4,
                 IndentSetClause = true,
                 IndentViewBody = true,
-                KeywordCasing = KeywordCasing.Uppercase,
+                KeywordCasing = KeywordCasing.Lowercase,
                 MultilineInsertSourcesList = true,
                 MultilineInsertTargetsList = true,
                 MultilineSelectElementsList = true,
@@ -70,10 +75,16 @@ namespace UpdateRaiserror
             fragment.Accept(visitor);
 
             var newTokenStream = new List<TSqlParserToken>();
-            int tokenIndex = 0;
-
-            foreach (var node in visitor.Nodes)
+            
+            for (int n = 0; n < visitor.Nodes.Count; n++)
             {
+                var node = visitor.Nodes[n];
+
+                var beginTokenIndex = (n == 0 ? 0 : node.FirstTokenIndex);
+                var firstTokenIndex = node.FirstTokenIndex;
+                var lastTokenIndex = node.LastTokenIndex;
+                var nextTokenIndex = (n < (visitor.Nodes.Count - 1) ? visitor.Nodes[n + 1].FirstTokenIndex : node.ScriptTokenStream.Count);
+
                 var msg = node.SecondParameter as StringLiteral;
 
                 int severity = 10;
@@ -90,24 +101,23 @@ namespace UpdateRaiserror
                 var errTokens = scriptGen.GenerateTokens(newErr);
 
                 // copy token till element where replaced statement begins
-                for (int i = tokenIndex; i < node.FirstTokenIndex; i++)
+                for (int i = beginTokenIndex; i < firstTokenIndex; i++)
                 {
-                    Console.WriteLine("Token: [{0}] Text: [{1}]", node.ScriptTokenStream[i].ToString(), node.ScriptTokenStream[i].Text);
+                    Console.WriteLine("Token: [{0}] Text: [{1}]", node.ScriptTokenStream[i].TokenType.ToString(), node.ScriptTokenStream[i].Text);
                     newTokenStream.Add(node.ScriptTokenStream[i]);
-                    tokenIndex = i;
                 }
 
                 // inject new statement
                 for (int i = 0; i < errTokens.Count; i++)
                 {
-                    Console.WriteLine("Token: [{0}] Text: [{1}]", errTokens[i].ToString(), errTokens[i].Text);
+                    Console.WriteLine("Token: [{0}] Text: [{1}]", errTokens[i].TokenType.ToString(), errTokens[i].Text);
                     newTokenStream.Add(errTokens[i]);
                 }
 
-                // copy remaining tokens
-                for (int i = node.LastTokenIndex + 1; i < node.ScriptTokenStream.Count; i++)
+                // copy tokens between last and next, if last token, till end of stream
+                for (int i = lastTokenIndex + 1; i < nextTokenIndex; i++)
                 {
-                    Console.WriteLine("Token: [{0}] Text: [{1}]", node.ScriptTokenStream[i].ToString(), node.ScriptTokenStream[i].Text);
+                    Console.WriteLine("Token: [{0}] Text: [{1}]", node.ScriptTokenStream[i].TokenType.ToString(), node.ScriptTokenStream[i].Text);
                     newTokenStream.Add(node.ScriptTokenStream[i]);
                 }
             }
@@ -121,7 +131,14 @@ namespace UpdateRaiserror
 
             StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
             scriptGen.GenerateScript(newFragment, sw);
-
+            
+            Console.WriteLine("-------------------------------------------------------");
+            for (int i = 0; i < newTokenStream.Count; i++)
+            {
+                Console.Write(newTokenStream[i].Text);
+            }
+            Console.WriteLine("-------------------------------------------------------");
+            
         }
 
         public static StringLiteral CreateStringLiteral(string value, bool isNational = true)
@@ -160,5 +177,4 @@ namespace UpdateRaiserror
             return ast;
         }
     }
-   
 }

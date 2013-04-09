@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿//------------------------------------------------------------------------------
+// <copyright file="DacPackage.cs" company="SQLProj.com">
+//         Copyright © 2013 SQLProj.com - All rights reserved.
+// </copyright>
+//------------------------------------------------------------------------------
 
-namespace UpdateRaiserror
+namespace SqlProj.SqlScriptDom.Example.UpdateRaiserror
 {
+    using System.Collections.Generic;
+    using Microsoft.SqlServer.TransactSql.ScriptDom;
+
     class RaiserrorVisitor : TSqlFragmentVisitor 
     {
         private List<RaiseErrorLegacyStatement> errNodes;

@@ -8,7 +8,7 @@
     <ProjectGuid>{66CA0E71-6190-45D3-B8D6-07201DBDC447}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UpdateRaiserror</RootNamespace>
+    <RootNamespace>SqlProj.SqlScriptDom.Example.UpdateRaiserror</RootNamespace>
     <AssemblyName>UpdateRaiserror</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
